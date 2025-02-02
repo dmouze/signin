@@ -36,6 +36,16 @@ class DatabaseHelper {
 
   Future<int> registerUser(String email, String password) async {
     final db = await database;
+    final existingUser = await db.query(
+      'users',
+      where: 'email = ?',
+      whereArgs: [email],
+    );
+
+    if (existingUser.isNotEmpty) {
+      throw Exception('User already exists');
+    }
+
     return await db.insert('users', {'email': email, 'password': password});
   }
 
